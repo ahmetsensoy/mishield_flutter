@@ -5,10 +5,12 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import '../config/app_config.dart';
 import '../config/remote_app_config.dart';
+import '../core/theme/app_colors.dart';
 import '../core/theme/app_theme.dart';
 import '../features/home/home_page.dart';
 import '../services/remote_app_config_service.dart';
 import '../services/version_gate.dart';
+import '../widgets/mishield_brand_mark.dart';
 import 'update_required_page.dart';
 
 /// Boots the app: fetches remote JSON, enforces minimum version, initializes ads if enabled.
@@ -31,9 +33,23 @@ class _AppRootState extends State<AppRoot> {
   }
 
   Future<void> _runBootstrap() async {
-    final info = await PackageInfo.fromPlatform();
-    final remote = await RemoteAppConfigService().fetch();
-    final version = VersionGate.normalize(info.version);
+    var version = '0.0.0';
+    RemoteAppConfig? remote;
+
+    try {
+      final info = await PackageInfo.fromPlatform();
+      version = VersionGate.normalize(info.version);
+    } on Object catch (e, st) {
+      debugPrint('MiShield: PackageInfo failed: $e\n$st');
+      version = '1.0.0';
+    }
+
+    try {
+      remote = await RemoteAppConfigService().fetch();
+    } on Object catch (e, st) {
+      debugPrint('MiShield: remote config failed: $e\n$st');
+      remote = null;
+    }
 
     if (!mounted) return;
 
@@ -52,13 +68,24 @@ class _AppRootState extends State<AppRoot> {
       remote: remote,
     );
 
-    if (resolved.showAds) {
-      await MobileAds.instance.initialize();
+    var showAds = resolved.showAds;
+    if (showAds) {
+      try {
+        await MobileAds.instance.initialize();
+      } on Object catch (e, st) {
+        debugPrint('MiShield: MobileAds.initialize failed: $e\n$st');
+        showAds = false;
+      }
     }
 
     if (!mounted) return;
     setState(() {
-      _config = resolved;
+      _config = ResolvedAppConfig(
+        primaryDns: resolved.primaryDns,
+        secondaryDns: resolved.secondaryDns,
+        showAds: showAds,
+        remote: resolved.remote,
+      );
       _phase = _BootPhase.ready;
     });
   }
@@ -78,8 +105,22 @@ class _AppRootState extends State<AppRoot> {
         return MaterialApp(
           debugShowCheckedModeBanner: false,
           theme: theme,
-          home: const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
+          home: Scaffold(
+            backgroundColor: AppColors.background,
+            body: const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MishieldBrandMark(logoSize: 120),
+                  SizedBox(height: 36),
+                  SizedBox(
+                    width: 32,
+                    height: 32,
+                    child: CircularProgressIndicator(strokeWidth: 3),
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       case _BootPhase.blocked:
