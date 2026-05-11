@@ -1,4 +1,4 @@
-package com.mishield.mishield_flutter
+package com.marcatsoftware.mishieldapp
 
 import android.app.Notification
 import android.app.NotificationChannel
@@ -142,8 +142,8 @@ class DnsVpnService : VpnService() {
 
     companion object {
         private const val TAG = "DnsVpnService"
-        const val ACTION_START = "com.mishield.mishield_flutter.START_DNS_VPN"
-        const val ACTION_STOP = "com.mishield.mishield_flutter.STOP_DNS_VPN"
+        const val ACTION_START = "com.marcatsoftware.mishieldapp.START_DNS_VPN"
+        const val ACTION_STOP = "com.marcatsoftware.mishieldapp.STOP_DNS_VPN"
         private const val EXTRA_PRIMARY_DNS = "primary_dns"
         private const val EXTRA_SECONDARY_DNS = "secondary_dns"
         private const val CHANNEL_ID = "mishield_dns_vpn"

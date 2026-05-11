@@ -9,7 +9,7 @@ abstract final class AppConfig {
       'https://gist.githubusercontent.com/example/raw/mishield_remote_config.json';
 
   /// Play Store package id (must match `applicationId` in Android).
-  static const String playStorePackageId = 'com.mishield.mishield_flutter';
+  static const String playStorePackageId = 'com.marcatsoftware.mishieldapp';
 
   /// Built-in DNS if remote fetch fails or omits values. Change to your ad-blocking resolvers.
   static const String defaultPrimaryDns = '94.140.14.14';

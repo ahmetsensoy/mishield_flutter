@@ -1,4 +1,4 @@
-package com.mishield.mishield_flutter
+package com.marcatsoftware.mishieldapp
 
 import android.app.Activity
 import android.content.Intent
@@ -63,6 +63,6 @@ class MainActivity : FlutterFragmentActivity() {
     }
 
     companion object {
-        private const val CHANNEL = "com.mishield.mishield_flutter/dns_vpn"
+        private const val CHANNEL = "com.marcatsoftware.mishieldapp/dns_vpn"
     }
 }

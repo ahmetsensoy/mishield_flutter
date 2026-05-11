@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 class DnsVpnPlatform {
   DnsVpnPlatform._();
 
-  static const MethodChannel _channel = MethodChannel('com.mishield.mishield_flutter/dns_vpn');
+  static const MethodChannel _channel = MethodChannel('com.marcatsoftware.mishieldapp/dns_vpn');
 
   static bool get isSupported =>
       !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
