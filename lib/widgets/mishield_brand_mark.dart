@@ -15,6 +15,9 @@ class MishieldBrandMark extends StatelessWidget {
 
   static const String _asset = 'assets/branding/marcat_splash_logo.png';
 
+  /// Intrinsic width/height of [_asset] (px). Update if the splash asset changes.
+  static const double _assetAspect = 856 / 162;
+
   @override
   Widget build(BuildContext context) {
     final textStyle = Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -26,17 +29,37 @@ class MishieldBrandMark extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Image.asset(
-          _asset,
-          width: logoSize,
-          height: logoSize,
-          filterQuality: FilterQuality.high,
-          errorBuilder: (context, error, stackTrace) {
-            debugPrint('MiShield: logo asset failed to load: $error');
-            return Icon(
-              Icons.shield_rounded,
-              size: logoSize * 0.85,
-              color: AppColors.accent,
+        LayoutBuilder(
+          builder: (context, constraints) {
+            var maxW = constraints.maxWidth;
+            if (!maxW.isFinite || maxW <= 0) {
+              maxW = MediaQuery.sizeOf(context).width;
+            }
+            maxW *= 0.92;
+
+            final targetBarHeight = logoSize;
+            var barWidth = targetBarHeight * _assetAspect;
+            if (barWidth > maxW) {
+              barWidth = maxW;
+            }
+            final barHeight = barWidth / _assetAspect;
+
+            return SizedBox(
+              width: barWidth,
+              height: barHeight,
+              child: Image.asset(
+                _asset,
+                fit: BoxFit.contain,
+                filterQuality: FilterQuality.high,
+                errorBuilder: (context, error, stackTrace) {
+                  debugPrint('MiShield: logo asset failed to load: $error');
+                  return Icon(
+                    Icons.shield_rounded,
+                    size: targetBarHeight * 0.85,
+                    color: AppColors.accent,
+                  );
+                },
+              ),
             );
           },
         ),

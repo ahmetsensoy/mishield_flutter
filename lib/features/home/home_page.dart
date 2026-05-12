@@ -61,12 +61,14 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     }
 
     await HapticFeedback.selectionClick();
+    SystemSound.play(SystemSoundType.click);
     setState(() => _busy = true);
     try {
       if (_protectionOn) {
         await DnsVpnPlatform.stopVpn();
         if (mounted) setState(() => _protectionOn = false);
         await HapticFeedback.lightImpact();
+        SystemSound.play(SystemSoundType.click);
         return;
       }
 
@@ -97,6 +99,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
         setState(() => _protectionOn = on);
         if (on) {
           await HapticFeedback.mediumImpact();
+          SystemSound.play(SystemSoundType.click);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Could not start DNS session. Check your connection and try again.')),
